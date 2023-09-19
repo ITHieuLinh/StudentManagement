@@ -7,7 +7,6 @@ import model.CourseOfStudent;
 import model.Report;
 import model.Student;
 import view.Menu;
-import view.Validation;
 
 /**
  *
@@ -54,15 +53,15 @@ public class StudentManagement extends Menu {
             System.err.println("List empty");
             return;
         }
-        ArrayList<Report> list_Rp = new ArrayList<>();
+        ArrayList<Report> listReports = new ArrayList<>();
         for (CourseOfStudent cs : courseOfStudentslist) {
             int total = 0;
             int id = cs.getId();
             String courseName = cs.getCourseName();
-            if (checkReport(list_Rp, id, courseName, total)) {
-                list_Rp.add(new Report(id, courseName, total + 1));
+            if (checkReport(listReports, id, courseName, total)) {
+                listReports.add(new Report(id, courseName, total + 1));
             } else {
-                for (Report r : list_Rp) {
+                for (Report r : listReports) {
                     if (cs.getId() == r.getId() && r.getCourseName().equalsIgnoreCase(courseName)) {
                         total++;
                         r.setId(id);
@@ -73,8 +72,8 @@ public class StudentManagement extends Menu {
                 }
             }
         }
-        for (int i = 0; i < list_Rp.size(); i++) {
-            System.out.println("Id:" + list_Rp.get(i).getId() + "  - Course: " + list_Rp.get(i).getCourseName() + " - Total: " + list_Rp.get(i).getTotalCourse());
+        for (int i = 0; i < listReports.size(); i++) {
+            System.out.println("Id:" + listReports.get(i).getId() + "  - Course: " + listReports.get(i).getCourseName() + " - Total: " + listReports.get(i).getTotalCourse());
         }
     }
 
@@ -115,10 +114,10 @@ public class StudentManagement extends Menu {
         }
     }
 
-    public ArrayList<Student> listByName(ArrayList<Student> list_s) {
+    public ArrayList<Student> listByName(ArrayList<Student> listStudents) {
         ArrayList<Student> list_Found = new ArrayList<>();
         String name = l.getString("Enter name to search: ");
-        for (Student student : list_s) {
+        for (Student student : listStudents) {
             if (student.getName().contains(name)) {
                 list_Found.add(student);
             }
@@ -133,17 +132,17 @@ public class StudentManagement extends Menu {
         }
 
         int id = l.getInt("Enter id to search", 1, 1000);
-        ArrayList<Student> list_ById = listById(studentList, id);
-        ArrayList<CourseOfStudent> list_ById_cs = listByIdCS(courseOfStudentslist, id);
+        ArrayList<Student> listStudentById = listById(studentList, id);
+        ArrayList<CourseOfStudent> listStudentById_cs = listByIdCS(courseOfStudentslist, id);
 
-        if (list_ById.isEmpty() || list_ById_cs.isEmpty()) {
+        if (listStudentById.isEmpty() || listStudentById_cs.isEmpty()) {
             System.err.println("Not exist");
         } else {
             System.out.println("Do you want to update or delete?");
             System.out.println("1. Update");
             System.out.println("2. Delete");
-            Student s = list_ById.get(0);
-            CourseOfStudent cs = list_ById_cs.get(0);
+            Student s = listStudentById.get(0);
+            CourseOfStudent cs = listStudentById_cs.get(0);
             int c = l.getInt("Enter choice: ", 1, 2);
             switch (c) {
                 case 1:
@@ -166,10 +165,10 @@ public class StudentManagement extends Menu {
         }
     }
 
-    public ArrayList<CourseOfStudent> listByIdCS(ArrayList<CourseOfStudent> list_s, int id) {
+    public ArrayList<CourseOfStudent> listByIdCS(ArrayList<CourseOfStudent> listStudent, int id) {
         ArrayList<CourseOfStudent> list_Found = new ArrayList<>();
 
-        for (CourseOfStudent Student : list_s) {
+        for (CourseOfStudent Student : listStudent) {
             if (Student.getId() == id) {
                 list_Found.add(Student);
             }
@@ -177,10 +176,10 @@ public class StudentManagement extends Menu {
         return list_Found;
     }
 
-    public ArrayList<Student> listById(ArrayList<Student> list_s, int id) {
+    public ArrayList<Student> listById(ArrayList<Student> listStudents, int id) {
         ArrayList<Student> list_Found = new ArrayList<>();
 
-        for (Student Student : list_s) {
+        for (Student Student : listStudents) {
             if (Student.getId() == id) {
                 list_Found.add(Student);
             }
@@ -197,8 +196,8 @@ public class StudentManagement extends Menu {
         return null;
     }
 
-    public boolean checkReport(ArrayList<Report> list_Rp, int id, String courseName, int total) {
-        for (Report rp : list_Rp) {
+    public boolean checkReport(ArrayList<Report> listReports, int id, String courseName, int total) {
+        for (Report rp : listReports) {
             if (id == rp.getId() && courseName.equalsIgnoreCase(rp.getCourseName()) && total == rp.getTotalCourse()) {
                 return false;
             }
