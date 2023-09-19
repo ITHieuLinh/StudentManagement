@@ -48,34 +48,40 @@ public class StudentManagement extends Menu {
         }
     }
 
-    public void report() {
-        if (studentList == null) {
-            System.err.println("List empty");
-            return;
-        }
-        ArrayList<Report> listReports = new ArrayList<>();
-        for (CourseOfStudent cs : courseOfStudentslist) {
-            int total = 0;
-            int id = cs.getId();
-            String courseName = cs.getCourseName();
-            if (checkReport(listReports, id, courseName, total)) {
-                listReports.add(new Report(id, courseName, total + 1));
-            } else {
-                for (Report r : listReports) {
-                    if (cs.getId() == r.getId() && r.getCourseName().equalsIgnoreCase(courseName)) {
-                        total++;
-                        r.setId(id);
-                        r.setCourseName(courseName);
-                        r.setTotalCourse(total + 1);
-                    }
+public void report() {
+    if (studentList == null) {
+        System.err.println("List empty");
+        return;
+    }
 
-                }
+    ArrayList<Report> listReports = new ArrayList<>();
+    
+    for (CourseOfStudent cs : courseOfStudentslist) {
+        int total = 1;  // Start with 1 for each new course
+        int id = cs.getId();
+        String courseName = cs.getCourseName();
+        boolean found = false;
+
+        for (Report r : listReports) {
+            if (r.getId() == id && r.getCourseName().equalsIgnoreCase(courseName)) {
+                // Update the existing report
+                r.setTotalCourse(r.getTotalCourse() + 1);
+                found = true;
+                break;
             }
         }
-        for (int i = 0; i < listReports.size(); i++) {
-            System.out.println("Id:" + listReports.get(i).getId() + "  - Course: " + listReports.get(i).getCourseName() + " - Total: " + listReports.get(i).getTotalCourse());
+
+        if (!found) {
+            // Create a new report
+            listReports.add(new Report(id, courseName, total));
         }
     }
+
+    for (Report report : listReports) {
+        System.out.println("Id: " + report.getId() + " | Course: " + report.getCourseName() + " | Total: " + report.getTotalCourse());
+    }
+}
+
 
     public void createStudent() {
         String name;
@@ -91,11 +97,12 @@ public class StudentManagement extends Menu {
 
     public void displayStudent(ArrayList<Student> list_s) {
         for (Student s : list_s) {
-            System.out.println("Id: " + s.getId() + " - Name: " + s.getName());
+            System.out.println("Id: " + s.getId() + " | Name: " + s.getName());
             for (CourseOfStudent cs : courseOfStudentslist) {
                 if (s.getId() == cs.getId()) {
-                    System.out.println("Semester: " + cs.getSemester() + " - courseName: " + cs.getCourseName());
+                    System.out.println("Semester: " + cs.getSemester() + " | courseName: " + cs.getCourseName());
                 }
+
             }
         }
     }
