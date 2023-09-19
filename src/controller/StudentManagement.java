@@ -17,15 +17,15 @@ public class StudentManagement extends Menu {
 
     static String[] mc = {"Create", "Find and Sort", "Update/Delete", "Report", "Exit"};
     Library l;
-    ArrayList<Student> list_s;
-    ArrayList<CourseOfStudent> list_cs;
+    ArrayList<Student> studentList;
+    ArrayList<CourseOfStudent> courseOfStudentslist;
     Student student;
 
     public StudentManagement() {
         super("PROGRAMMING", mc);
         l = new Library();
-        list_s = new ArrayList<>();
-        list_cs = new ArrayList<>();
+        studentList = new ArrayList<>();
+        courseOfStudentslist = new ArrayList<>();
         student = new Student();
     }
 
@@ -50,12 +50,12 @@ public class StudentManagement extends Menu {
     }
 
     public void report() {
-        if (list_s == null) {
+        if (studentList == null) {
             System.err.println("List empty");
             return;
         }
         ArrayList<Report> list_Rp = new ArrayList<>();
-        for (CourseOfStudent cs : list_cs) {
+        for (CourseOfStudent cs : courseOfStudentslist) {
             int total = 0;
             int id = cs.getId();
             String courseName = cs.getCourseName();
@@ -81,19 +81,19 @@ public class StudentManagement extends Menu {
     public void createStudent() {
         String name;
         int id = l.getInt("Enter Student Id", 1, 1000);
-        if (!checkID(list_s, id)) {
+        if (!checkID(studentList, id)) {
             name = l.getString("Enter Student name: ");
-            list_s.add(new Student(id, name));
+            studentList.add(new Student(id, name));
         }
         int semester = l.getInt("Enter semester", 1, 10);
         String courseName = l.getString("Enter courseName: ");
-        list_cs.add(new CourseOfStudent(id, semester, courseName));
+        courseOfStudentslist.add(new CourseOfStudent(id, semester, courseName));
     }
 
     public void displayStudent(ArrayList<Student> list_s) {
         for (Student s : list_s) {
             System.out.println("Id: " + s.getId() + " - Name: " + s.getName());
-            for (CourseOfStudent cs : list_cs) {
+            for (CourseOfStudent cs : courseOfStudentslist) {
                 if (s.getId() == cs.getId()) {
                     System.out.println("Semester: " + cs.getSemester() + " - courseName: " + cs.getCourseName());
                 }
@@ -102,11 +102,11 @@ public class StudentManagement extends Menu {
     }
 
     public void findSort() {
-        if (list_s == null) {
+        if (studentList == null) {
             System.err.println("List empty");
             return;
         }
-        ArrayList<Student> list_ByName = listByName(list_s);
+        ArrayList<Student> list_ByName = listByName(studentList);
         if (list_ByName.isEmpty()) {
             System.err.println("Not exist");
         } else {
@@ -127,13 +127,15 @@ public class StudentManagement extends Menu {
     }
 
     public void updateDelete() {
-        if (list_s == null) {
+        if (studentList == null) {
             System.err.println("List empty");
             return;
         }
+
         int id = l.getInt("Enter id to search", 1, 1000);
-        ArrayList<Student> list_ById = listById(list_s, id);
-        ArrayList<CourseOfStudent> list_ById_cs = listByIdCS(list_cs, id);
+        ArrayList<Student> list_ById = listById(studentList, id);
+        ArrayList<CourseOfStudent> list_ById_cs = listByIdCS(courseOfStudentslist, id);
+
         if (list_ById.isEmpty() || list_ById_cs.isEmpty()) {
             System.err.println("Not exist");
         } else {
@@ -155,8 +157,8 @@ public class StudentManagement extends Menu {
                     break;
                 case 2:
                     //Remove
-                    list_cs.remove(cs);
-                    list_s.remove(s);
+                    courseOfStudentslist.remove(cs);
+                    studentList.remove(s);
                     System.out.println("Delete success");
                     break;
                 default:
@@ -187,7 +189,7 @@ public class StudentManagement extends Menu {
     }
 
     public Student GetById(int id) {
-        for (Student st : list_s) {
+        for (Student st : studentList) {
             if (st.getId() == id) {
                 return st;
             }
@@ -208,8 +210,7 @@ public class StudentManagement extends Menu {
         if (list.isEmpty()) {
             return false;
         } else {
-
-            for (Student s : list_s) {
+            for (Student s : studentList) {
                 if (s.getId() == id) {
                     return true;
                 }
